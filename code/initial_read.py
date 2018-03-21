@@ -29,9 +29,8 @@ for setting in ['input_folder', 'input_files']:
         quit()
 
 input_folder = settings['input_folder']
+input_folder = input_folder + '/' if not input_folder.endswith('/') else input_folder
 input_files = settings['input_files']
-
-# todo check that the input folder ends in a slash
 
 for input_file in input_files:
     full_input_file = input_folder + input_file

@@ -44,10 +44,9 @@ for input_file in input_files:
                 break
             else:
                 line_count += 1
-    logger.debug('skip to %d' % line_count)
-    if 'MULTI' in full_input_file:
-        data = pd.read_csv(full_input_file, skiprows=line_count + 1, sep='|')
-        logger.debug('data frame from %s has shape %d x %d' % (full_input_file, data.shape[0], data.shape[1]))
+    data = pd.read_csv(full_input_file, skiprows=line_count + 1, sep='|', header=None)
+    logger.debug('data frame from %s has shape %d x %d' % (full_input_file, data.shape[0], data.shape[1]))
+    logger.debug('data frame has columns %s' % data.columns.values)
 
 
 logger.debug('done')

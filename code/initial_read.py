@@ -51,10 +51,18 @@ for input_file in input_files:
                 tokens = row.split('.')
                 names.append(tokens[-1].strip())
 
-    data = pd.read_csv(full_input_file, skiprows=line_count + 1, sep='|', header=None, names=names)
-    logger.debug('data frame from %s has shape %d x %d' % (full_input_file, data.shape[0], data.shape[1]))
+    data = pd.read_csv(full_input_file, skiprows=line_count + 1, sep='|', header=None, names=names,
+                       skipinitialspace=True, skip_blank_lines=True, parse_dates=True)
+    logger.info('data frame from %s has shape %d x %d' % (full_input_file, data.shape[0], data.shape[1]))
     logger.debug('data frame has columns %s' % data.columns.values)
-
+    for column in data.columns.values:
+        if 'XXXX' in column:
+            # counts = data[column].value_counts()
+            unique_values = data[column].unique()
+            unique_values = [item.strip() if type(item) == str else item for item in unique_values]
+            logger.debug('column %s has unique values %s' % (column, unique_values))
+            # counts.hist()
+            # plt.show()
 
 logger.debug('done')
 finish_time = time.time()

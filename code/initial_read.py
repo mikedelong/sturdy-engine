@@ -38,13 +38,20 @@ for input_file in input_files:
 
     with open(full_input_file, 'r') as input_csv_fp:
         line_count = 0
+        names = list()
         for row in input_csv_fp:
-            if row.startswith('>END'):
+            if row.startswith('>DESCRIPTION'):
+                line_count += 1
+                pass
+            elif row.startswith('>END'):
                 logger.debug('file: %s, skip to %d' % (full_input_file, line_count))
                 break
             else:
                 line_count += 1
-    data = pd.read_csv(full_input_file, skiprows=line_count + 1, sep='|', header=None)
+                tokens = row.split('.')
+                names.append(tokens[-1].strip())
+
+    data = pd.read_csv(full_input_file, skiprows=line_count + 1, sep='|', header=None, names=names)
     logger.debug('data frame from %s has shape %d x %d' % (full_input_file, data.shape[0], data.shape[1]))
     logger.debug('data frame has columns %s' % data.columns.values)
 

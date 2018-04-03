@@ -63,6 +63,12 @@ for input_file in input_files:
             logger.debug('column %s has unique values %s' % (column, unique_values))
             # counts.hist()
             # plt.show()
+    # write the clean data to a file
+    output_file = input_file.replace('.txt', '.csv')
+    output_folder = '../output/'
+    full_output_file = output_folder + output_file
+    logger.debug('writing clean data to %s' % full_output_file)
+    data.to_csv(full_output_file, index=False)
 
 logger.debug('done')
 finish_time = time.time()

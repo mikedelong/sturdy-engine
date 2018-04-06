@@ -32,23 +32,27 @@ input_files = [item.replace('.txt', '.csv') for item in input_files]
 counts = Counter()
 file_count = 0
 limit = 2000
-most_common_count = 50
+most_common_count = 100
 
 for item in input_files:
     if file_count < limit:
+        file_count += 1
         full_file_name = input_folder + item
         data = pd.read_csv(full_file_name, nrows=2)
         values = data.columns.values
 
         logger.debug('%s : %s' % (item, values))
-        for item in values:
-            counts[item] += 1
+        for value in values:
+            counts[value] += 1
 
 logger.debug('there are %d unique column headings ' % len(counts))
 most_common = counts.most_common(min(most_common_count, len(counts)))
 labels = [item[0] for item in most_common]
 values = [item[1] for item in most_common]
+sum_most_common = sum(values)
+sum_all = sum(counts.values())
 logger.debug(most_common)
+logger.debug('%d %d %d' % (sum_all, sum_most_common, sum_all - sum_most_common))
 
 indexes = np.arange(len(labels))
 width = 0.8
@@ -62,6 +66,23 @@ output_folder = settings['vertical_bar_chart_output_folder']
 output_file = settings['vertical_bar_chart_output_file']
 full_output_file_name = output_folder + output_file
 logger.debug('writing vertical bar chart to %s' % full_output_file_name)
+plt.savefig(full_output_file_name)
+
+plt.clf()
+plt.figure(figsize=(8, 16))
+values.reverse()
+labels.reverse()
+plt.barh(indexes, values, width)
+plt.yticks(indexes + width * 0.5, labels)
+plt.ylim(0, len(labels))
+
+plt.grid(True)
+plt.tight_layout()
+
+output_folder = settings['horizontal_bar_chart_output_folder']
+output_file = settings['horizontal_bar_chart_output_file']
+full_output_file_name = output_folder + output_file
+logger.debug('writing horizontal bar chart to %s' % full_output_file_name)
 plt.savefig(full_output_file_name)
 
 logger.debug('done')

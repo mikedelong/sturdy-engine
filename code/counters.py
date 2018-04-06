@@ -39,16 +39,22 @@ for item in input_files:
         data = pd.read_csv(full_file_name, nrows=2)
         headings = data.columns.values
         if heading_of_interest in headings:
+            logger.debug(item)
             sub_data = pd.read_csv(full_file_name, usecols=[heading_of_interest])
-            counts.update(sub_data[heading_of_interest].values)
+            value_counts = sub_data[heading_of_interest].value_counts()
+            for key in value_counts.index:
+                value = value_counts[key]
+                counts[key] += value
 
-most_common_count = 1000
-most_common = counts.most_common(most_common_count)
-sum_most_common = sum([item[1] for item in most_common])
-sum_all = sum(counts.values())
-logger.debug(most_common)
-logger.debug('all counts: %d in top : %d difference: %d' % (sum_all, sum_most_common, sum_all - sum_most_common))
-logger.debug('most common %d accounts for %d%% of total' % (most_common_count, 100 * sum_most_common / sum_all))
+            logger.debug(counts)
+
+# most_common_count = 1000
+# most_common = counts.most_common(most_common_count)
+# sum_most_common = sum([item[1] for item in most_common])
+# sum_all = sum(counts.values())
+# logger.debug(most_common)
+# logger.debug('all counts: %d in top : %d difference: %d' % (sum_all, sum_most_common, sum_all - sum_most_common))
+# logger.debug('most common %d accounts for %d%% of total' % (most_common_count, 100 * sum_most_common / sum_all))
 
 logger.debug('done')
 finish_time = time.time()

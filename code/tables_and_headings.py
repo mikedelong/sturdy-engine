@@ -32,6 +32,7 @@ input_files = [item.replace('.txt', '.csv') for item in input_files]
 counts = Counter()
 file_count = 0
 limit = 2000
+most_common_count = 50
 
 for item in input_files:
     if file_count < limit:
@@ -44,13 +45,13 @@ for item in input_files:
             counts[item] += 1
 
 logger.debug('there are %d unique column headings ' % len(counts))
-most = counts.most_common(40)
-labels = [item[0] for item in most]
-values = [item[1] for item in most]
-logger.debug(most)
+most_common = counts.most_common(min(most_common_count, len(counts)))
+labels = [item[0] for item in most_common]
+values = [item[1] for item in most_common]
+logger.debug(most_common)
 
 indexes = np.arange(len(labels))
-width = 0.9
+width = 0.8
 
 plt.figure(figsize=(11, 8))
 plt.bar(indexes, values, width)

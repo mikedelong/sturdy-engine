@@ -65,7 +65,7 @@ for input_file in input_files:
             # plt.show()
     # write the clean data to a file
     output_file = input_file.replace('.txt', '.csv')
-    output_folder = '../output/'
+    output_folder = '../processed/'  # todo move to a setting
     full_output_file = output_folder + output_file
     logger.debug('writing clean data to %s' % full_output_file)
     data.to_csv(full_output_file, index=False)

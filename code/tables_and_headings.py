@@ -25,7 +25,7 @@ with open(settings_file, 'r') as settings_fp:
 
 logger.debug('settings: %s' % settings)
 
-input_folder = '../output/'
+input_folder = '../processed/'
 input_files = settings['input_files']
 input_files = [item.replace('.txt', '.csv') for item in input_files]
 
@@ -58,7 +58,11 @@ plt.bar(indexes, values, width)
 plt.xticks(indexes + width * 0.5, labels, rotation=90)
 plt.tight_layout()
 
-plt.show()
+output_folder = settings['vertical_bar_chart_output_folder']
+output_file = settings['vertical_bar_chart_output_file']
+full_output_file_name = output_folder + output_file
+logger.debug('writing vertical bar chart to %s' % full_output_file_name)
+plt.savefig(full_output_file_name)
 
 logger.debug('done')
 finish_time = time.time()

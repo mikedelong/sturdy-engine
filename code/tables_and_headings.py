@@ -32,7 +32,8 @@ input_files = [item.replace('.txt', '.csv') for item in input_files]
 counts = Counter()
 file_count = 0
 limit = 2000
-most_common_count = 100
+# todo move this to the settings
+most_common_count = 200
 
 for item in input_files:
     if file_count < limit:
@@ -52,7 +53,7 @@ values = [item[1] for item in most_common]
 sum_most_common = sum(values)
 sum_all = sum(counts.values())
 logger.debug(most_common)
-logger.debug('%d %d %d' % (sum_all, sum_most_common, sum_all - sum_most_common))
+logger.debug('all counts: %d in top : %d difference: %d' % (sum_all, sum_most_common, sum_all - sum_most_common))
 
 indexes = np.arange(len(labels))
 width = 0.8
@@ -69,7 +70,8 @@ logger.debug('writing vertical bar chart to %s' % full_output_file_name)
 plt.savefig(full_output_file_name)
 
 plt.clf()
-plt.figure(figsize=(8, 16))
+# todo make this contingent on the number of records in the most common
+plt.figure(figsize=(8, 32))
 values.reverse()
 labels.reverse()
 plt.barh(indexes, values, width)

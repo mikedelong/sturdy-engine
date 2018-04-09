@@ -27,8 +27,10 @@ input_folder = settings['input_folder']
 input_files = settings['input_files']
 input_files = [item.replace('.txt', '.csv') for item in input_files]
 heading_of_interest = settings['heading_of_interest']
+headings_of_interest = settings['headings_of_interest']
 augment_1_result = settings['augment_1_result']
 augment_1_pieces = settings['augment_1_pieces']
+one_or_many = settings['one_or_many']
 
 file_count = 0
 limit = 2000
@@ -46,17 +48,28 @@ for item in input_files:
             data[augment_1_result] = data[augment_1_pieces[0]].map(str) + data[augment_1_pieces[1]].astype(str)
             augmented_counted += 1
 
-        if heading_of_interest in headings:
-            logger.debug(item)
-            sub_data = pd.read_csv(full_file_name, usecols=[heading_of_interest])
-            value_counts = sub_data[heading_of_interest].value_counts()
-            for key in value_counts.index:
-                value = value_counts[key]
-                counts[key] += value
+        if one_or_many == 'one':
+            if heading_of_interest in headings:
+                logger.debug(item)
+                sub_data = pd.read_csv(full_file_name, usecols=[heading_of_interest])
+                value_counts = sub_data[heading_of_interest].value_counts()
+                for key in value_counts.index:
+                    value = value_counts[key]
+                    counts[key] += value
 
-            logger.debug(counts.most_common(10))
+                logger.debug(counts.most_common(10))
+                files_counted += 1
+        else:
+            if all([heading in headings for heading in headings_of_interest]):
+                sub_data = pd.read_csv(full_file_name, usecols=headings_of_interest)
+                logger.debug('file %s has data of interest that is %s and the other columns are %s' %
+                             (item, sub_data.shape,
+                              list(set(data.columns.values).difference(set(headings_of_interest)))))
+                files_counted += 1
+
 
 logger.debug('we augmented columns in %d files' % augmented_counted)
+logger.debug('we found %d files of interest' % files_counted)
 
 do_report_most_common = False
 if do_report_most_common:

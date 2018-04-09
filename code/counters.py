@@ -23,6 +23,7 @@ with open(settings_file, 'r') as settings_fp:
 
 logger.debug('settings: %s' % settings)
 
+# todo move this to a setting
 input_folder = '../processed/'
 input_files = settings['input_files']
 input_files = [item.replace('.txt', '.csv') for item in input_files]

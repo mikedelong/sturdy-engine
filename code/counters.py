@@ -23,15 +23,18 @@ with open(settings_file, 'r') as settings_fp:
 
 logger.debug('settings: %s' % settings)
 
-# todo move this to a setting
-input_folder = '../processed/'
+input_folder = settings['input_folder']
 input_files = settings['input_files']
 input_files = [item.replace('.txt', '.csv') for item in input_files]
 heading_of_interest = settings['heading_of_interest']
+augment_1_result = settings['augment_1_result']
+augment_1_pieces = settings['augment_1_pieces']
 
 file_count = 0
 limit = 2000
 counts = Counter()
+files_counted = 0
+augmented_counted = 0
 
 for item in input_files:
     if file_count < limit:
@@ -39,6 +42,10 @@ for item in input_files:
         full_file_name = input_folder + item
         data = pd.read_csv(full_file_name, nrows=2)
         headings = data.columns.values
+        if augment_1_pieces[0] in headings and augment_1_pieces[1] in headings:
+            data[augment_1_result] = data[augment_1_pieces[0]].map(str) + data[augment_1_pieces[1]].astype(str)
+            augmented_counted += 1
+
         if heading_of_interest in headings:
             logger.debug(item)
             sub_data = pd.read_csv(full_file_name, usecols=[heading_of_interest])
@@ -47,15 +54,19 @@ for item in input_files:
                 value = value_counts[key]
                 counts[key] += value
 
-            logger.debug(counts)
+            logger.debug(counts.most_common(10))
 
-# most_common_count = 1000
-# most_common = counts.most_common(most_common_count)
-# sum_most_common = sum([item[1] for item in most_common])
-# sum_all = sum(counts.values())
-# logger.debug(most_common)
-# logger.debug('all counts: %d in top : %d difference: %d' % (sum_all, sum_most_common, sum_all - sum_most_common))
-# logger.debug('most common %d accounts for %d%% of total' % (most_common_count, 100 * sum_most_common / sum_all))
+logger.debug('we augmented columns in %d files' % augmented_counted)
+
+do_report_most_common = False
+if do_report_most_common:
+    most_common_count = 1000
+    most_common = counts.most_common(most_common_count)
+    sum_most_common = sum([item[1] for item in most_common])
+    sum_all = sum(counts.values())
+    logger.debug(most_common)
+    logger.debug('all counts: %d in top : %d difference: %d' % (sum_all, sum_most_common, sum_all - sum_most_common))
+    logger.debug('most common %d accounts for %d%% of total' % (most_common_count, 100 * sum_most_common / sum_all))
 
 logger.debug('done')
 finish_time = time.time()

@@ -22,6 +22,7 @@ with open(settings_file, 'r') as settings_fp:
 
 logger.debug('settings: %s' % settings)
 
+# todo move to a setting
 input_folder = '../processed/'
 input_files = settings['input_files']
 input_files = [item.replace('.txt', '.csv') for item in input_files]
@@ -29,6 +30,7 @@ input_files = [item.replace('.txt', '.csv') for item in input_files]
 file_count = 0
 limit = 2000
 
+starts_with_string = settings['starts_with']
 for item in input_files:
     if file_count < limit:
         file_count += 1
@@ -36,7 +38,7 @@ for item in input_files:
         data = pd.read_csv(full_file_name, nrows=2)
         headings = data.columns.values
         for heading in headings:
-            if heading.startswith('R'):
+            if heading.startswith(starts_with_string):
                 logger.debug('file %s has heading [%s]' % (item, heading))
 
 logger.debug('done')

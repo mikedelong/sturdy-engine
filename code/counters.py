@@ -31,6 +31,9 @@ headings_of_interest = settings['headings_of_interest']
 augment_1_result = settings['augment_1_result']
 augment_1_pieces = settings['augment_1_pieces']
 one_or_many = settings['one_or_many']
+if one_or_many not in ['one', 'many']:
+    logger.warning('Setting one or many should be one or many but instead is %s. Quitting.' % one_or_many)
+    quit()
 
 file_count = 0
 limit = 2000

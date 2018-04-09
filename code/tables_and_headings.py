@@ -31,9 +31,9 @@ input_files = [item.replace('.txt', '.csv') for item in input_files]
 
 counts = Counter()
 file_count = 0
+# todo move this to a setting
 limit = 2000
-# todo move this to the settings
-most_common_count = 200
+most_common_count = settings['most_common_count']
 
 for item in input_files:
     if file_count < limit:

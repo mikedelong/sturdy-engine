@@ -28,8 +28,6 @@ input_files = settings['input_files']
 input_files = [item.replace('.txt', '.csv') for item in input_files]
 heading_of_interest = settings['heading_of_interest']
 headings_of_interest = settings['headings_of_interest']
-augment_1_result = settings['augment_1_result']
-augment_1_pieces = settings['augment_1_pieces']
 one_or_many = settings['one_or_many']
 if one_or_many not in ['one', 'many']:
     logger.warning('Setting one or many should be one or many but instead is %s. Quitting.' % one_or_many)
@@ -47,9 +45,6 @@ for item in input_files:
         full_file_name = input_folder + item
         data = pd.read_csv(full_file_name, nrows=2)
         headings = data.columns.values
-        if augment_1_pieces[0] in headings and augment_1_pieces[1] in headings:
-            data[augment_1_result] = data[augment_1_pieces[0]].map(str) + data[augment_1_pieces[1]].astype(str)
-            augmented_counted += 1
 
         if one_or_many == 'one':
             if heading_of_interest in headings:

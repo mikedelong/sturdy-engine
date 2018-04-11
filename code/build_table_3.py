@@ -20,43 +20,31 @@ logger.debug('settings file : %s' % settings_file)
 with open(settings_file, 'r') as settings_fp:
     settings = json.load(settings_fp)
 
-logger.debug('settings: %s' % settings)
-
-headings = settings['headings']
 input_folder = settings['input_folder']
 
 file_prefix = settings['file_prefix']
-enterprise_location_codes = settings['enterprise_location_codes']
+codes = settings['codes']
 file_infix = settings['file_infix']
 file_suffixes = settings['file_suffixes']
 file_suffix = settings['file_suffix']
 join_column = settings['join_column']
-column_alias = settings['column_alias']
-mapper = {column_alias[1]: column_alias[0]}
+usecols_0 = settings['usecols_0']
+use_cols_1 = settings['usecols_1']
+rename_columns = settings['rename_columns']
 
-for elc in enterprise_location_codes:
-    file_names = [input_folder + file_prefix + str(elc) + file_infix + file_type + file_suffix for file_type in
+for code in codes:
+    file_names = [input_folder + file_prefix + str(code) + file_infix + file_type + file_suffix for file_type in
                   file_suffixes]
     logger.debug(file_names)
-    frames = [pd.read_csv(item) for item in file_names]
-    frames = [item.rename(columns=mapper) for item in frames]
-    logger.debug('frames shapes: %s' % [item.shape for item in frames])
 
-    t0 = frames[0].join(frames[1])
-
-    logger.debug(t0.shape)
-    # for file_name in input_files:
-    #     full_file_name = input_folder + file_name
-    #     data = pd.read_csv(full_file_name, nrows=2)
-    #     actual_headings = data.columns.values
-    #     logger.debug('headings: %s' % actual_headings)
-
-    # if all([item in actual_headings for item in headings]):
-    #     data = pd.read_csv(full_file_name, usecols=headings)
-    #     logger.debug('data has shape: %d x %d' % data.shape)
-    #     logger.debug(data.head(20))
-    # else:
-    #     logger.debug('missing headings are: %s' % set(headings).difference(set(actual_headings)))
+    frame_0 = pd.read_csv(file_names[0], usecols=usecols_0)
+    frame_1 = pd.read_csv(file_names[1], usecols=use_cols_1)
+    frame_2 = pd.read_csv(file_names[2], usecols=use_cols_1)
+    frame_2.rename(columns=rename_columns)
+    t0 = frame_0.join(frame_1, on=join_column, rsuffix='_r')
+    t1 = t0.join(frame_2, on=join_column, rsuffix='_r')
+    logger.debug(t1.columns.values)
+    logger.debug(t1.shape)
 
 logger.debug('done')
 finish_time = time.time()

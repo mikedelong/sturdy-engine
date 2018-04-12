@@ -36,13 +36,17 @@ for code in codes:
     logger.debug(file_names)
 
     frame_0 = pd.read_csv(file_names[0], usecols=usecols_0)
+    logger.debug('frame 0 has counts: \n%s' % frame_0.count())
     frame_1 = pd.read_csv(file_names[1], usecols=usecols_1)
+    logger.debug('frame 1 has counts: \n%s' % frame_1.count())
     frame_2 = pd.read_csv(file_names[2], usecols=usecols_1)
-    frame_2.rename(columns=rename_columns)
+    logger.debug('frame 2 has counts: \n%s' % frame_2.count())
+    frame_2.rename(columns=rename_columns, inplace=True)
     joined = frame_0.join(frame_1, on=join_column, rsuffix='_r')
     result = joined.join(frame_2, on=join_column, rsuffix='_r')
     logger.debug('result columns: %s' % result.columns.values)
     logger.debug('result has shape %d x %d' % result.shape)
+    logger.debug('result has non-null counts: \n%s' % result.count())
 
 logger.debug('done')
 finish_time = time.time()

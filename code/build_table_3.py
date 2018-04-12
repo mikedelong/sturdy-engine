@@ -20,17 +20,16 @@ logger.debug('settings file : %s' % settings_file)
 with open(settings_file, 'r') as settings_fp:
     settings = json.load(settings_fp)
 
-input_folder = settings['input_folder']
-
-file_prefix = settings['file_prefix']
 codes = settings['codes']
 file_infix = settings['file_infix']
+file_prefix = settings['file_prefix']
 file_suffixes = settings['file_suffixes']
 file_suffix = settings['file_suffix']
+input_folder = settings['input_folder']
 join_column = settings['join_column']
-usecols_0 = settings['usecols_0']
-use_cols_1 = settings['usecols_1']
 rename_columns = settings['rename_columns']
+usecols_0 = settings['usecols_0']
+usecols_1 = settings['usecols_1']
 
 for code in codes:
     file_names = [input_folder + file_prefix + str(code) + file_infix + file_type + file_suffix for file_type in
@@ -38,13 +37,13 @@ for code in codes:
     logger.debug(file_names)
 
     frame_0 = pd.read_csv(file_names[0], usecols=usecols_0)
-    frame_1 = pd.read_csv(file_names[1], usecols=use_cols_1)
-    frame_2 = pd.read_csv(file_names[2], usecols=use_cols_1)
+    frame_1 = pd.read_csv(file_names[1], usecols=usecols_1)
+    frame_2 = pd.read_csv(file_names[2], usecols=usecols_1)
     frame_2.rename(columns=rename_columns)
-    t0 = frame_0.join(frame_1, on=join_column, rsuffix='_r')
-    t1 = t0.join(frame_2, on=join_column, rsuffix='_r')
-    logger.debug(t1.columns.values)
-    logger.debug(t1.shape)
+    joined = frame_0.join(frame_1, on=join_column, rsuffix='_r')
+    result = joined.join(frame_2, on=join_column, rsuffix='_r')
+    logger.debug('result columns: %s' % result.columns.values)
+    logger.debug('result has shape %d x %d' % result.shape)
 
 logger.debug('done')
 finish_time = time.time()

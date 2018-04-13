@@ -41,8 +41,8 @@ for code in codes:
     frame_1 = pd.read_csv(file_names[1], usecols=usecols_1)
     frame_2 = pd.read_csv(file_names[2], usecols=usecols_1)
     frame_2.rename(columns=rename_columns, inplace=True)
-    joined = frame_0.join(frame_1, on=join_column, rsuffix='_r')
-    result = joined.join(frame_2, on=join_column, rsuffix='_r')
+    joined = frame_0.merge(frame_1, on=join_column)
+    result = joined.merge(frame_2, on=join_column)
 
     logger.debug('result columns: %s' % result.columns.values)
     logger.debug('result has shape %d x %d' % result.shape)

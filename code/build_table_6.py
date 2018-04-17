@@ -22,6 +22,7 @@ with open(settings_file, 'r') as settings_fp:
 logger.debug('settings: %s' % settings)
 
 headings_of_interest = settings['headings_of_interest']
+heading = headings_of_interest[0]
 input_files = settings['input_files']
 input_folder = settings['input_folder']
 for input_file in input_files:
@@ -29,11 +30,11 @@ for input_file in input_files:
     logger.debug('input file : %s' % full_input_file)
     data = pd.read_csv(full_input_file, nrows=2)
     headings = data.columns.values
-    logger.debug('headings: %s' % headings)
+    # logger.debug('headings: %s' % headings)
     data = pd.read_csv(full_input_file, usecols=headings_of_interest)
     logger.debug('data has shape %d x %d' % data.shape)
     logger.debug('data has counts: \n%s' % data.count())
-    logger.debug('data head: \n%s' % data.head(20))
+    logger.debug('unique values: %s' % data[heading].unique())
 
 logger.debug('done')
 finish_time = time.time()
